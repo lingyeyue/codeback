@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+        <html class="">
+        <head>
+            <script>window.qPerformance = { headStart: Date.now() };</script>
+<a href = "" style = "padding:0px 0px 0px 18px" onclick = "window.open('forgetPassword.jsp')">忘记密码？</a>  <!-- 打开新窗口 -->
+
+ public void doGet(HttpServletRequest request, HttpServletResponse response)
+                      throws ServletException, IOException
+    {
+        System.out.println("生成验证码");
+        response.reset();
+ 
+        response.setContentType("image/png");
+ 
+        response.setHeader("Pragma", "No-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
+ 
+        BufferedImage image = new BufferedImage(width, height,BufferedImage.TYPE_INT_RGB);
+ 
+        Graphics g = image.getGraphics();
+         
+        g.setColor(getRandColor(200,250));
+        g.fillRect(0, 0, width, height);
+ 
+        for (int i = 0; i < 4; i++)
+        {
+            drawCode(g, i);
+        }
+        drawNoise(g, 12);
+ 
+        //g.setColor(Color.gray);
+        //g.drawRect(0, 0, width - 1, height - 1);
+ 
+        HttpSession session = request.getSession(true);
+        session.removeAttribute("rand");
+        session.setAttribute("rand", codeNumbers);
+        codeNumbers = "";
+        ServletOutputStream sos = response.getOutputStream();
+        ImageIO.write(image, "PNG", sos);
+        sos.close();
+    }
+
+<img id="code" src="codeMakerServlet" title="看不清点击刷新验证码" style="cursor : pointer;"  onclick="return refreshcode()"/>
+function refreshcode(){
+	        document.getElementById("code").src="codeMakerServlet?a="+Math.random()+100;
+	        return true;
+	    }
+      
+      
+public static void main(String[] args){  
+     MailSenderInfo mailInfo = new MailSenderInfo();   
+     mailInfo.setMailServerHost("smtp.163.com");   
+     mailInfo.setMailServerPort("25");   
+     mailInfo.setValidate(true);   
+     mailInfo.setUserName("tianzhihensu@163.com");   
+     mailInfo.setPassword("********");//您的邮箱密码   
+     mailInfo.setFromAddress("tianzhihensu@163.com");   
+     mailInfo.setToAddress("sacevmproject@163.com");   
+     mailInfo.setSubject("设置邮箱标题,sfsfdfdff");   
+     mailInfo.setContent("<a href = \"http://write.blog.csdn.net/postlist\">http://write.blog.csdn.net/postlist</a>");   
+     SimpleMailSender sms = new SimpleMailSender();  
+         sms.sendTextMail(mailInfo);//发送文体格式   
+         SimpleMailSender.sendHtmlMail(mailInfo);//发送html格式  
+   }  
+
+ @param userEmail
+	 * @return
+	 */
+	public Boolean sendMail(String userEmail) {
+		Boolean flag = false;
+		try {
+			// 获取当前系统时间
+			Date now = new Date();
+			String currentTime = "" + now.getTime();
+			
+			String urlString = "http://localhost:8080/EVM/forgetPasswordAction?method=resetPassword&key=";
+			CodeEncryption cEncryption = new CodeEncryption();
+			String encryptedCode = cEncryption.encryptCode(currentTime + "@" + userEmail);
+			String link = urlString + encryptedCode;
+			String adminMailAddress = "admin@126.com";
+			String contents = this.setContents(userEmail, link, adminMailAddress);
+			//邮箱配置
+			String serverHost = "smtp.163.com";
+			String serverPort = "25";
+			Boolean isValidate = true;
+			String userName = "user@163.com";
+			String password = "user";
+			String toMailAddress = userEmail;
+			String subtitle = "注册账号密码找回 ";
+			this.setMail(serverHost, serverPort, isValidate, userName, password, toMailAddress, subtitle, contents);
+			
+			flag = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return flag;
+	}
+
+ @param serverHost
+	 * @param serverPort
+	 * @param isValidate
+	 * @param userName
+	 * @param password
+	 * @param toMailAddress
+	 * @param subtitle
+	 * @param contents
+	 */
+	public void setMail(String serverHost, String serverPort,
+			Boolean isValidate, String userName, String password,
+			String toMailAddress, String subtitle, String contents) {
+		MailSenderInfo mailInfo = new MailSenderInfo();
+		mailInfo.setMailServerHost(serverHost);
+		mailInfo.setMailServerPort(serverPort);
+		mailInfo.setValidate(isValidate);
+		mailInfo.setUserName(userName);
+		mailInfo.setPassword(password);// 您的邮箱密码
+		mailInfo.setFromAddress(userName);
+		mailInfo.setToAddress(toMailAddress);
+		mailInfo.setSubject(subtitle);
+		mailInfo.setContent(contents);
+		SimpleMailSender sms = new SimpleMailSender();
+	//	sms.sendTextMail(mailInfo);
+		SimpleMailSender.sendHtmlMail(mailInfo);
+	}
+
+@param request
+	 * @param response
+	 */
+	public void passwordForgotten(HttpServletRequest request, HttpServletResponse response) {
+		String userEmail = request.getParameter("userEmailInput");
+		ForgetPasswordService fPasswordService = new ForgetPasswordService();
+		Boolean flag = fPasswordService.sendMail(userEmail);
+		
+		try {
+			if (flag) {
+				RequestDispatcher rDispatcher = request.getRequestDispatcher("fpEmailSended.jsp");
+				String str1 = userEmail.substring(0, 3);
+				String str2 = userEmail.substring(userEmail.indexOf("@"));
+				String str3 = str1 + "***" + str2;
+				request.setAttribute("userEmail", str3);
+				request.setAttribute("flag", "true");
+				rDispatcher.forward(request, response);
+			} else {
+				RequestDispatcher rDispatcher = request.getRequestDispatcher("fpEmailSended.jsp");
+				String str1 = userEmail.substring(0, 3);
+				String str2 = userEmail.substring(userEmail.indexOf("@"));
+				String str3 = str1 + "***" + str2;
+				request.setAttribute("userEmail", str3);
+				request.setAttribute("flag", false);
+				rDispatcher.forward(request, response);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+@param request
+	 * @param response
+	 */
+	public void resetPassword(HttpServletRequest request, HttpServletResponse response) {
+		String key = request.getParameter("key");
+		ForgetPasswordService fService = new ForgetPasswordService();
+		List<String> datasList = new ArrayList<String>();
+		datasList = fService.getExplicitCode(key);
+		String time = datasList.get(0);
+		String userEmail = datasList.get(1);
+		Boolean timeFlag = fService.judgeOfTime(time);	//判断用户点击链接的时间是否过期
+		String flag = "false";
+		if (timeFlag) {
+			flag = "true";
+		}
+		List<String> resultList = new ArrayList<String>();
+		resultList.add(flag);
+		resultList.add(userEmail);
+		
+		try {
+			RequestDispatcher rDispatcher = request.getRequestDispatcher("resetPassword.jsp");
+			request.setAttribute("datasList", resultList);
+			rDispatcher.forward(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+<%
+		List<String> datasList = (List<String>) request.getAttribute("datasList");
+		String flag = datasList.get(0);	//链接是否过期
+	//	flag = "false";
+		String userEmail = datasList.get(1);	//用户登录邮箱
+	%>
+
+<input type = "hidden" id = "hiddenInput" name = "hiddenInput" value = "<%=flag %>" >
+
+<form action="forgetPasswordAction" class="form-horizontal"
+						role="form" method="POST" style="border: 1px dotted silver;"
+						id="resetPasswordForm">
+	<br>
+	<div class="form-group">
+		<div class = "col-lg-3 col-lg-offset-1 col-md-3 col-md-offset-1 col-sm-4 col-xs-4 text-right">
+			<label>用户名</label>
+		</div>
+		<div class = "col-lg-8 col-md-8 col-sm-7 col-xs-8 text-left">
+			<b style = "color:#FF0000;font-size:10px;">* </b>
+			<label><%=userEmail %></label>
+			<input type = "hidden" name = "userEmailInput" id = "userEmailInput"  value = "<%=userEmail %>">
+		</div>
+	</div>
+						
+	<div class="form-group">
+		<div class = "col-lg-3 col-lg-offset-1 col-md-3 col-md-offset-1 col-sm-4 col-xs-4 text-right">
+			<label>密     码</label>
+		</div>
+		<div class = "col-lg-8 col-md-8 col-sm-7 col-xs-8 text-left">
+			<b style = "color:#FF0000;font-size:10px;">* </b>
+			<input type = "password" name = "password1" id = "password1" value = "">
+			<label>  注:密码长度至少6位</label>
+		</div>
+	</div>
+						
+	<div class="form-group">
+		<div class = "col-lg-3 col-lg-offset-1 col-md-3 col-md-offset-1 col-sm-4 col-xs-4 text-right">
+			<label>确认密码</label>
+		</div>
+		<div class = "col-lg-8 col-md-8 col-sm-7 col-xs-8 text-left">
+			<b style = "color:#FF0000;font-size:10px;">* </b>
+			<input type = "password" name = "password2" id = "password2" value = "">
+		</div>
+	</div>
+						
+	<input type="hidden" name="method" value="resetPasswordComplete">
+						
+	<div class="form-group">
+		<div class = "col-12 col-md-12 col-sm-12 col-xs-12 text-center">
+			<button type = "submit" class = "btn btn-primary btn-sm" onclick = "return resetPasswordConfirm()">确定</button>
+		</div>
+	</div>
+</form>
+
+
+<div class = "col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-12 col-sm-12 text-left" id = "failureDivId">
+	<i class="fa fa-warning fa-lg" style="color: #FF0000;"></i><b
+		style="font-family: arial; color: #00A600; font-size: 18px;">  重置密码链接已过期</b>
+	<p></p>
+	<p></p>
+	<p style="font-family: arial; font-size: 14px;">
+		       没有收到重置密码邮件，您可以到邮件垃圾箱里找找。
+		<br>       或者点击：<a href = "/EVM/forgetPassword.jsp">【重新发送重置密码邮件】</a>。
+	</p>
+</div>
+
+var flag = $("#hiddenInput").val();
+	if(flag == "true") {
+		$("#failureDivId").hide();
+		$("#resetPasswordForm").show();
+	} else {
+		$("#resetPasswordForm").hide();
+		$("#failureDivId").show();
+	}
+
