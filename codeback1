@@ -16,11 +16,9 @@ $(document).ready(function () {
 <div>
   <div class="main0">
      <div class="formBox">
-       <p><font size="+2" color="#9E00A2">登录密码重置</font></p>
+       <h3>       <p><font size="+2" color="#9E00A2">登录密码重置</font></h3>
        <ul>
-       <p><font size="+1" color="#9E00A2">*身份验证*</font></p>
-          <li>&gt;登录密码重置</li>
-          <li class="lastLi">&gt;重置完成</li>
+       <p><font size="+1" color="#9E00A2">*身份验证&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; *登录密码&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;*重置完成&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</font></p>
        </ul>
        <img src="images/line.png" />
        <div class="itembox">
