@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>忘记密码</title>
 <link type="text/css" rel="stylesheet" href="css/password.css" />
 <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
@@ -12,14 +13,12 @@ $(document).ready(function () {
 </head>
 
 <body>
-<div class="main">
   <div class="main0">
      <div class="formBox">
-       <h3>登录密码重置</h3>
+       <h3>       <p><font size="+2" color="#9E00A2">登录密码重置</font></h3>
        <ul>
-          <li class="mainCol firLi">&gt;身份验证</li>
-          <li class="mainCol">&gt;登录密码重置</li>
-          <li class="lastLi">&gt;重置完成</li>
+       <p><font size="+1" color="#9E00A2">*身份验证&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 登录密码&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;重置完成&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</font></p>
+
        </ul>
        <img src="images/line2.png" />
        <div class="itembox itembox_2">
@@ -46,12 +45,6 @@ $(document).ready(function () {
      </div>
   </div>
 </div>
-
-<div class="footer">
-  <div class="footer0">
-     <div class="footer_l"></div>
-     <div class="footer_r"></div>
-  </div> 
 </div>
 </body>
 </html>
